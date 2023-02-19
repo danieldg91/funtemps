@@ -27,6 +27,7 @@ func main() {
 	// Conversion of temperatures
 	var result float64
 	var input float64
+	var out string
 
 	// -F flag
 	if fahr != 0 {
@@ -35,8 +36,10 @@ func main() {
 			fmt.Println("Error: '-out F'. No conversion between identical temperature scales")
 		} else if output == "C" {
 			result = conv.FahrenheitToCelsius(fahr)
+			out = "°C"
 		} else if output == "K" {
 			result = conv.FahrenheitToKelvin(fahr)
+			out = "°K"
 		} else {
 			fmt.Println("Invalid output flag or value '0'. Choose either -C, -F or -K")
 		}
@@ -47,8 +50,10 @@ func main() {
 			fmt.Println("Error: '-out C'. No conversion between identical temperature scales")
 		} else if output == "F" {
 			result = conv.CelsiusToFahrenheit(cels)
+			out = "°F"
 		} else if output == "K" {
 			result = conv.CelsiusToKelvin(cels)
+			out = "°K"
 		} else {
 			fmt.Println("Invalid output flag or value '0'. Choose either -C, -F or -K")
 		}
@@ -59,8 +64,10 @@ func main() {
 			fmt.Println("Error: no conversion between identical temperature scales")
 		} else if output == "F" {
 			result = conv.KelvinToFahrenheit(kelv)
+			out = "°F"
 		} else if output == "C" {
 			result = conv.KelvinToCelsius(kelv)
+			out = "°C"
 		} else {
 			fmt.Println("Invalid output flag or value '0'. Choose either -C, -F or -K")
 		}
@@ -68,7 +75,7 @@ func main() {
 		fmt.Println("You must enter a valid input temperature scale (-C, -F or -K).")
 	}
 
-	fmt.Printf("%12.2f%s er %12.2f%s\n", input, getTemperatureScale(fahr, cels, kelv), result, output)
+	fmt.Printf("%12.2f%s er %12.2f%s\n", input, getTemperatureScale(cels, fahr, kelv), result, out)
 
 }
 
