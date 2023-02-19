@@ -79,7 +79,7 @@ func main() {
 
 }
 
-func getTemperatureScale(f, c, k float64) string {
+func getTemperatureScale(c, f, k float64) string {
 	if c != 0 {
 		return "°C"
 	} else if f != 0 {
