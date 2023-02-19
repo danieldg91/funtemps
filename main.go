@@ -1,80 +1,84 @@
 package main
 
 import (
-	"danieldg91/funtemps/conv"
 	"flag"
 	"fmt"
-	"log"
+
+	"danieldg91/funtemps/conv"
 )
 
-var (
-	fahr float64
-	cels float64
-	kelv float64
-	in   string
-	out  string
-)
+var input, output string
+var cels, kelv, fahr float64
 
 func init() {
-	flag.Float64Var(&fahr, "F", 0, "Enter a temperature in Fahrenheit")
-	flag.Float64Var(&cels, "C", 0, "Enter a temperature in Celsius")
-	flag.Float64Var(&kelv, "K", 0, "Enter a temperature in Kelvin")
-	flag.StringVar(&in, "in", "", "Enter the input temperature unit (F, C, K)")
-	flag.StringVar(&out, "out", "", "Enter the desired output temperature unit (F, C, K)")
 
+	// definition of flags -F, -K, -C and -out
+	flag.Float64Var(&fahr, "F", 0.0, "temperatur i grader fahrenheit")
+	flag.Float64Var(&cels, "C", 0.0, "temperatur i grader celsius")
+	flag.Float64Var(&kelv, "K", 0.0, "temperatur i grader kelvin")
+	flag.StringVar(&output, "out", "", "Calculates output-temperatures in C - Celsius, K - Kelvin, F - Fahrenheit)")
+	flag.StringVar(&input, "in", "", "Enter input '-C' for Celsius, '-K' for Kelvin or '-F' for Fahrenheit)")
 }
 
 func main() {
 
 	flag.Parse()
 
+	// Conversion of temperatures
+	var result float64
 	var input float64
-	var output float64
 
-	// Convert temperature
-	if in == "C" {
-		input = cels
-		switch out {
-		case "K":
-			output = conv.CelsiusToKelvin(cels)
-			break
-		case "F":
-			output = conv.CelsiusToFahrenheit(cels)
-			break
-		default:
-			log.Fatalf("Conversion from Celsius to invalid flag. '-out K' or '-out F' are valid outputs.")
-			break
-		}
-	} else if in == "F" {
+	// -F flag
+	if fahr != 0 {
 		input = fahr
-		switch out {
-		case "C":
-			output = conv.FahrenheitToCelsius(fahr)
-			break
-		case "K":
-			output = conv.FahrenheitToKelvin(fahr)
-			break
-		default:
-			log.Fatalf("Conversion from Fahrenheit to invalid flag. '-out C' or '-out K' are valid outputs.")
-			break
+		if output == "F" {
+			fmt.Println("Error: '-out F'. No conversion between identical temperature scales")
+		} else if output == "C" {
+			result = conv.FahrenheitToCelsius(fahr)
+		} else if output == "K" {
+			result = conv.FahrenheitToKelvin(fahr)
+		} else {
+			fmt.Println("Invalid output flag or value '0'. Choose either -C, -F or -K")
 		}
-	} else if in == "K" {
+		// -C flag
+	} else if cels != 0 {
+		input = cels
+		if output == "C" {
+			fmt.Println("Error: '-out C'. No conversion between identical temperature scales")
+		} else if output == "F" {
+			result = conv.CelsiusToFahrenheit(cels)
+		} else if output == "K" {
+			result = conv.CelsiusToKelvin(cels)
+		} else {
+			fmt.Println("Invalid output flag or value '0'. Choose either -C, -F or -K")
+		}
+
+	} else if kelv != 0 {
 		input = kelv
-		switch out {
-		case "C":
-			output = conv.KelvinToCelsius(kelv)
-			break
-		case "F":
-			output = conv.KelvinToFahrenheit(kelv)
-			break
-		default:
-			log.Fatalf("Conversion from Celsius to invalid flag. '-out K' or '-out F' are valid outputs.")
-			break
+		if output == "K" {
+			fmt.Println("Error: no conversion between identical temperature scales")
+		} else if output == "F" {
+			result = conv.KelvinToFahrenheit(kelv)
+		} else if output == "C" {
+			result = conv.KelvinToCelsius(kelv)
+		} else {
+			fmt.Println("Invalid output flag or value '0'. Choose either -C, -F or -K")
 		}
 	} else {
-		log.Fatalf("Invalid conversion. One of the following scales must be different from your input: -C (Celsius) -K (Kelvin) -F (Fahrenheit)")
+		fmt.Println("You must enter a valid input temperature scale (-C, -F or -K).")
 	}
 
-	// Print results
-	fmt.Printf("%12.2f°%s is %12.2f°%s\n", input, in, output, out)
+	fmt.Printf("%12.2f%s er %12.2f%s\n", input, getTemperatureScale(fahr, cels, kelv), result, output)
+
+}
+
+func getTemperatureScale(c, f, k float64) string {
+	if c != 0 {
+		return "°C"
+	} else if f != 0 {
+		return "°F"
+	} else if k != 0 {
+		return "°K"
+	}
+	return ""
 }
