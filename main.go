@@ -27,12 +27,13 @@ func main() {
 
 	// Conversion of temperatures
 	var result float64
-	var input float64
+	var in float64
 	var out string
 
 	// -F flag
-	if fahr != 0 {
-		input = fahr
+	if isFlagPassed("F") {
+		in = fahr
+		input = "F"
 		if output == "F" {
 			fmt.Println("Error: '-out F'. No conversion between identical temperature scales")
 		} else if output == "C" {
@@ -45,8 +46,9 @@ func main() {
 			fmt.Println("Invalid output flag. Choose either -C or -K")
 		}
 		// -C flag
-	} else if cels != 0 {
-		input = cels
+	} else if isFlagPassed("C") {
+		in = cels
+		input = "C"
 		if output == "C" {
 			fmt.Println("Error: '-out C'. No conversion between identical temperature scales")
 		} else if output == "F" {
@@ -59,8 +61,9 @@ func main() {
 			fmt.Println("Invalid output flag. Choose either -F or -K")
 		}
 
-	} else if kelv != 0 {
-		input = kelv
+	} else if isFlagPassed("K") {
+		in = kelv
+		input = "K"
 		if output == "K" {
 			fmt.Println("Error: no conversion between identical temperature scales")
 		} else if output == "F" {
@@ -77,7 +80,7 @@ func main() {
 	}
 
 	// Formatterer input etter Janis' spesifikasjoner.
-	formattedInput := strconv.FormatFloat(input, 'f', -1, 64)
+	formattedInput := strconv.FormatFloat(in, 'f', -1, 64)
 	if strings.Contains(formattedInput, ".") {
 		formattedInput = strings.TrimRight(formattedInput, "0")
 		if formattedInput[len(formattedInput)-1] == '.' {
@@ -87,18 +90,18 @@ func main() {
 	// Formatterer output med funksjon lengre nede
 	formattedResult := formatNumber(result)
 
-	fmt.Printf("%14s%s = %14s%s\n", formattedInput, getTemperatureScale(cels, fahr, kelv), formattedResult, out)
+	fmt.Printf("%14s%s = %14s%s\n", formattedInput, getTemperatureScale(input), formattedResult, out)
 	// må være %s for at format-funksjonene skal fungere.
 
 }
 
 // Når denne blir kalt i main, så tar den imot verdiene fra cels, fahr og kelv og returnerer rett bokstav på slutten av float64 tallet.
-func getTemperatureScale(c, f, k float64) string {
-	if c != 0 {
+func getTemperatureScale(input string) string {
+	if input == "C" {
 		return " °C"
-	} else if f != 0 {
+	} else if input == "F" {
 		return " °F"
-	} else if k != 0 {
+	} else if input == "K" {
 		return " °K"
 	}
 	return ""
@@ -125,9 +128,19 @@ func formatNumber(num float64) string {
 	n := len(intPart)
 	if n > 3 {
 		for i := n - 3; i > 0; i -= 3 {
-			intPart = intPart[:i] + "'" + intPart[i:]
+			intPart = intPart[:i] + " " + intPart[i:]
 		}
 	}
 
 	return intPart + fracPart
+}
+
+func isFlagPassed(name string) bool {
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
 }
