@@ -33,45 +33,45 @@ func main() {
 	// -F flag
 	if isFlagPassed("F") {
 		in = fahr
-		input = "F"
+		input = "°F"
 		if output == "F" {
 			fmt.Println("Error: '-out F'. No conversion between identical temperature scales")
 		} else if output == "C" {
 			result = conv.FahrenheitToCelsius(fahr)
-			out = " °C"
+			out = "°C"
 		} else if output == "K" {
 			result = conv.FahrenheitToKelvin(fahr)
-			out = " °K"
+			out = "°K"
 		} else {
 			fmt.Println("Invalid output flag. Choose either -C or -K")
 		}
 		// -C flag
 	} else if isFlagPassed("C") {
 		in = cels
-		input = "C"
+		input = "°C"
 		if output == "C" {
 			fmt.Println("Error: '-out C'. No conversion between identical temperature scales")
 		} else if output == "F" {
 			result = conv.CelsiusToFahrenheit(cels)
-			out = " °F"
+			out = "°F"
 		} else if output == "K" {
 			result = conv.CelsiusToKelvin(cels)
-			out = " °K"
+			out = "°K"
 		} else {
 			fmt.Println("Invalid output flag. Choose either -F or -K")
 		}
 
 	} else if isFlagPassed("K") {
 		in = kelv
-		input = "K"
+		input = "°K"
 		if output == "K" {
 			fmt.Println("Error: no conversion between identical temperature scales")
 		} else if output == "F" {
 			result = conv.KelvinToFahrenheit(kelv)
-			out = " °F"
+			out = "°F"
 		} else if output == "C" {
 			result = conv.KelvinToCelsius(kelv)
-			out = " °C"
+			out = "°C"
 		} else {
 			fmt.Println("Invalid output flag. Choose either -C -F")
 		}
@@ -90,23 +90,27 @@ func main() {
 	// Formatterer output med funksjon lengre nede
 	formattedResult := formatNumber(result)
 
-	fmt.Printf("%14s%s = %14s%s\n", formattedInput, getTemperatureScale(input), formattedResult, out)
+	fmt.Printf("%14s%s = %14s%s\n", formattedInput, input, formattedResult, out)
 	// må være %s for at format-funksjonene skal fungere.
 
 }
 
-// Når denne blir kalt i main, så tar den imot verdiene fra cels, fahr og kelv og returnerer rett bokstav på slutten av float64 tallet.
-func getTemperatureScale(input string) string {
-	if input == "C" {
-		return " °C"
-	} else if input == "F" {
-		return " °F"
-	} else if input == "K" {
-		return " °K"
-	}
-	return ""
-}
+/*
+// REMOVED REDUNDANT CODE
 
+	    (from printf: 'getTemperatureScale(input)')
+
+		func getTemperatureScale(input string) string {
+			if input == "C" {
+				return " °C"
+			} else if input == "F" {
+				return " °F"
+			} else if input == "K" {
+				return " °K"
+			}
+			return ""
+		}
+*/
 func formatNumber(num float64) string {
 	// sjekker om det er desimaler...
 	if num == float64(int(num)) {
