@@ -1,11 +1,12 @@
 package main
 
 import (
-	"danieldg91/funtemps/conv"
 	"flag"
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/danieldg91/funtemps/conv"
 )
 
 var input, output string
